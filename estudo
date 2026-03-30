@@ -3,155 +3,307 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>C++ Academy Pro - 30 Desafios</title>
+    <title> Os D ta oq?| Enterprise Edition</title>
     <style>
-        :root { --primary: #659ad2; --accent: #00ff95; --bg: #0d1117; --surface: #161b22; --border: #30363d; --text: #c9d1d9; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-        header { background: var(--surface); padding: 10px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .logo { color: var(--primary); font-weight: 800; font-size: 1.2rem; }
-        main { display: grid; grid-template-columns: 320px 1fr; flex: 1; overflow: hidden; }
-        #sidebar { background: var(--surface); border-right: 1px solid var(--border); overflow-y: auto; padding: 15px; }
-        .q-item { padding: 12px; margin-bottom: 8px; border-radius: 6px; cursor: pointer; font-size: 13px; transition: 0.2s; background: #21262d44; border: 1px solid #30363d; }
-        .q-item:hover { background: #30363d; border-color: var(--primary); }
-        .q-active { background: #23863633; border-color: #238636; color: var(--accent); font-weight: bold; }
-        #editor-container { display: grid; grid-template-rows: auto 1fr 180px; overflow: hidden; }
-        #instructions { background: #0d1117; padding: 20px; border-bottom: 1px solid var(--border); }
-        .toolbar { background: #161b22; padding: 8px 20px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
-        textarea { background: #0d1117; color: #79c0ff; padding: 20px; border: none; font-family: 'Consolas', monospace; font-size: 15px; outline: none; resize: none; }
-        #console { background: #000; color: #00ff00; padding: 15px; font-family: monospace; font-size: 13px; overflow-y: auto; border-top: 1px solid var(--border); white-space: pre-wrap; }
-        .btn-run { background: #238636; color: white; border: none; padding: 10px 25px; border-radius: 6px; font-weight: bold; cursor: pointer; }
-        .btn-run:hover { background: #2ea043; }
+        :root {
+            --bg-dark: #080a0f;
+            --surface: #11141b;
+            --surface-light: #1c212c;
+            --primary: #4a90e2;
+            --accent: #00e676;
+            --text-main: #e6edf3;
+            --text-dim: #8b949e;
+            --border: #30363d;
+            --code-bg: #0d1117;
+        }
+
+        * { box-sizing: border-box; transition: all 0.2s ease; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-dark); color: var(--text-main); margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+        /* HEADER */
+        header { height: 65px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; z-index: 100; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+        .logo { font-size: 1.1rem; font-weight: 800; letter-spacing: 1px; color: var(--primary); }
+        .logo span { color: var(--text-main); }
+
+        .progress-container { width: 220px; }
+        .progress-bar-bg { background: #21262d; height: 6px; border-radius: 10px; overflow: hidden; margin-top: 5px; }
+        .progress-bar-fill { background: var(--accent); height: 100%; width: 0%; box-shadow: 0 0 10px var(--accent); }
+
+        .btn-theory { background: var(--surface-light); border: 1px solid var(--border); color: var(--primary); padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem; }
+        .btn-theory:hover { background: var(--primary); color: white; transform: translateY(-2px); }
+
+        main { flex: 1; display: flex; overflow: hidden; position: relative; }
+
+        /* MODAL DE TEORIA (CONTEÚDO COMPLETO) */
+        #theory-modal { 
+            display: none; 
+            position: absolute; 
+            top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(8, 10, 15, 0.95); 
+            backdrop-filter: blur(15px); 
+            z-index: 500; 
+            justify-content: center; 
+            padding: 50px 20px; 
+            overflow-y: auto;
+        }
+        .theory-content { max-width: 900px; width: 100%; position: relative; animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .theory-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 45px; box-shadow: 0 25px 60px rgba(0,0,0,0.6); line-height: 1.7; }
+        .theory-card h1 { color: var(--primary); font-size: 2rem; margin-bottom: 30px; border-bottom: 2px solid var(--border); padding-bottom: 15px; }
+        .theory-card h2 { color: var(--accent); font-size: 1.4rem; margin-top: 40px; display: flex; align-items: center; gap: 10px; }
+        .theory-card h2::before { content: '>'; color: var(--primary); }
+        .theory-card p { color: var(--text-dim); font-size: 1.05rem; margin: 15px 0; }
+        .theory-card ul { padding-left: 20px; margin: 20px 0; }
+        .theory-card li { color: var(--text-dim); margin-bottom: 12px; }
+        .theory-card strong { color: var(--text-main); }
+        .theory-card code { background: var(--code-bg); color: #79c0ff; padding: 3px 8px; border-radius: 5px; font-family: 'Consolas', monospace; font-size: 0.95rem; border: 1px solid var(--border); }
+        
+        .close-theory { position: sticky; top: 0; float: right; background: #ff4d4d; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; z-index: 600; box-shadow: 0 4px 15px rgba(255,77,77,0.3); }
+
+        /* SIDEBAR E ÁREA DE PRÁTICA */
+        #practice-page { display: grid; grid-template-columns: 320px 1fr; width: 100%; }
+        #sidebar { background: var(--surface); border-right: 1px solid var(--border); overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 8px; font-family: 'Fira Code', 'Consolas', monospace; }
+        
+        .q-item { padding: 14px; border-radius: 10px; cursor: pointer; background: rgba(255,255,255,0.03); border: 1px solid transparent; }
+        .q-item:hover { background: var(--surface-light); border-color: var(--border); }
+        .q-item span { font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; display: block; margin-bottom: 5px; letter-spacing: 1px; }
+        .q-item b { font-size: 0.85rem; font-weight: 500; }
+        .q-active { background: rgba(74, 144, 226, 0.12) !important; border-color: var(--primary) !important; color: var(--primary); }
+
+        #workspace { display: grid; grid-template-rows: auto 1fr 180px; background: var(--bg-dark); }
+        .q-info { padding: 25px 35px; background: var(--surface); border-bottom: 1px solid var(--border); }
+        .editor-header { background: #1c212c; padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+        textarea { flex: 1; background: var(--code-bg); color: #79c0ff; padding: 30px; border: none; font-family: 'Consolas', 'Fira Code', monospace; font-size: 15px; outline: none; resize: none; line-height: 1.5; }
+        
+        #console { background: #05070a; color: #00ff00; padding: 20px 35px; font-family: 'Consolas', monospace; font-size: 0.9rem; border-top: 1px solid var(--border); overflow-y: auto; }
+        .btn-run { background: var(--primary); color: white; border: none; padding: 10px 25px; border-radius: 6px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(74,144,226,0.3); }
+        .btn-run:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo">C++ ACADEMY_</div>
-    <div id="stat">Questão 1 de 30</div>
+    <div class="logo">Os D ta oq?</span></div>
+    <div style="display: flex; gap: 20px; align-items: center;">
+        <button class="btn-theory" onclick="toggleTheory(true)">Cola de Marginal</button>
+        <div class="progress-container">
+            <div style="display: flex; justify-content: space-between; font-size: 0.7rem; font-weight: bold; color: var(--text-dim);">
+                <span>PROCESSO DE APRENDIZADO</span>
+                <span id="prog-txt">0%</span>
+            </div>
+            <div class="progress-bar-bg"><div id="prog-fill" class="progress-bar-fill"></div></div>
+        </div>
+    </div>
 </header>
 
 <main>
-    <nav id="sidebar"></nav>
-    <section id="editor-container">
-        <div id="instructions">
-            <h2 id="title" style="margin:0; color:var(--primary); font-size: 1.3rem;">Carregando...</h2>
-            <p id="desc" style="margin: 8px 0; font-size: 1rem; line-height: 1.4; color: #8b949e;"></p>
-            <small id="hint" style="color: #d2a8ff; font-style: italic;"></small>
-        </div>
+    <div id="theory-modal">
+        <div class="theory-content">
+            <button class="close-theory" onclick="toggleTheory(false)">FECHAR (ESC)</button>
+            <div class="theory-card">
+                <h1>Guia de Sobrevivência C++</h1>
+                
+                <h2>1. Introdução à Linguagem</h2>
+                <p>O C++ é uma linguagem de <strong>médio nível</strong>. Isso significa que ela permite manipular hardware diretamente (como ponteiros) enquanto oferece abstrações poderosas (como classes e objetos). É a linguagem base de motores de jogos (Unreal Engine), navegadores e sistemas operacionais.</p>
+                
+                <h2>2. Estrutura Obrigatória</h2>
+                <p>Todo programa precisa de uma biblioteca de entrada/saída e uma função principal:</p>
+                <code>#include &lt;iostream&gt;<br>using namespace std;<br><br>int main() {<br>&nbsp;&nbsp;&nbsp;return 0;<br>}</code>
+                
+                <h2>3. Tipagem e Variáveis</h2>
+                <p>C++ é <strong>estaticamente tipada</strong>, ou seja, você deve declarar o tipo da variável e ele não pode mudar:</p>
+                <ul>
+                    <li><strong>int:</strong> Números inteiros (ex: <code>int idade = 25;</code>)</li>
+                    <li><strong>double/float:</strong> Números decimais (ex: <code>double preco = 19.99;</code>)</li>
+                    <li><strong>char:</strong> Único caractere (ex: <code>char letra = 'A';</code>)</li>
+                    <li><strong>string:</strong> Texto (ex: <code>string nome = "Gemini";</code>)</li>
+                    <li><strong>bool:</strong> Booleano (ex: <code>bool ativo = true;</code>)</li>
+                </ul>
 
-        <div style="display:flex; flex-direction:column; overflow:hidden;">
-            <div class="toolbar"><span>main.cpp</span><button class="btn-run" onclick="runCpp()">COMPILAR & RODAR</button></div>
-            <textarea id="code-editor" spellcheck="false"></textarea>
-        </div>
+                <h2>4. Entrada e Saída (I/O)</h2>
+                <ul>
+                    <li><strong>cout:</strong> Envia dados para o console. Use <code><<</code>.</li>
+                    <li><strong>cin:</strong> Recebe dados do teclado. Use <code>>></code>.</li>
+                    <li><strong>endl:</strong> Quebra a linha no console.</li>
+                </ul>
 
-        <div id="console">O terminal C++ aparecerá aqui após a execução...</div>
-    </section>
+                <h2>5. Estruturas de Decisão (if/else)</h2>
+                <p>Usadas para ramificar a execução do código baseada em condições lógicas:</p>
+                <code>if (idade >= 18) {<br>&nbsp;&nbsp;&nbsp;cout << "Adulto";<br>} else {<br>&nbsp;&nbsp;&nbsp;cout << "Menor";<br>}</code>
+
+                <h2>6. Laços de Repetição (Loops)</h2>
+                <ul>
+                    <li><strong>for:</strong> Ideal para contagens conhecidas (ex: de 1 a 10).</li>
+                    <li><strong>while:</strong> Ideal para condições que dependem do usuário (ex: "repetir enquanto a senha for errada").</li>
+                </ul>
+
+                <h2>7. Arrays e Vectors</h2>
+                <p>Permitem armazenar múltiplos valores do mesmo tipo. O <strong>std::vector</strong> é a versão moderna e dinâmica, que cresce conforme a necessidade usando o comando <code>v.push_back(valor);</code>.</p>
+
+                <h2>8. Matrizes</h2>
+                <p>São arrays multidimensionais (tabelas). Exemplo: <code>int mapa[5][5];</code> cria uma grade com 5 linhas e 5 colunas.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="practice-page">
+        <aside id="sidebar"></aside>
+        <div id="workspace">
+            <div class="q-info">
+                <h2 id="q-title" style="margin:0; color: var(--primary);"></h2>
+                <p id="q-desc" style="color: var(--text-dim); margin-top: 12px; font-size: 0.98rem; line-height: 1.6;"></p>
+            </div>
+            <div style="display:flex; flex-direction:column; overflow:hidden;">
+                <div class="editor-header">
+                    <span style="font-size: 0.8rem; font-family: monospace; color: var(--text-dim);">workspace/main.cpp</span>
+                    <button class="btn-run" onclick="salvar()">SALVAR E COMPILAR</button>
+                </div>
+                <textarea id="editor" spellcheck="false"></textarea>
+            </div>
+            <div id="console">Terminal: Aguardando compilação...</div>
+        </div>
+    </div>
 </main>
 
 <script>
     const questions = [
-        // FASE 1: BÁSICO E MATEMÁTICA
-        { id: 1, title: "Saída Simples", desc: "Use cout para imprimir a frase 'Aprendendo C++' na tela.", hint: "Dica: std::cout << \"texto\";", code: "#include <iostream>\n\nint main() {\n    // Seu código aqui\n    return 0;\n}" },
-        { id: 2, title: "Entrada de Usuário", desc: "Crie uma variável do tipo int, leia um valor com cin e depois imprima o valor.", hint: "Dica: cin >> variavel;", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    int num;\n    return 0;\n}" },
-        { id: 3, title: "Soma de Dois Números", desc: "Leia dois números inteiros e imprima a soma deles.", hint: "Dica: cin >> a >> b;", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
-        { id: 4, title: "Cálculo de Dobro", desc: "Leia um número e mostre o dobro dele (num * 2).", hint: "Dica: cout << n * 2;", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
-        { id: 5, title: "Média Simples", desc: "Leia duas notas (float) e calcule a média aritmética.", hint: "Dica: (n1 + n2) / 2.0", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
-        { id: 6, title: "Área do Círculo", desc: "Leia o raio e calcule a área (3.14 * raio * raio).", hint: "Use float para o raio.", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
-        { id: 7, title: "Conversor de Temperatura", desc: "Converta Celsius para Fahrenheit. Fórmula: (C * 9/5) + 32.", hint: "F = (C * 1.8) + 32", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
-        { id: 8, title: "Resto da Divisão", desc: "Leia dois números e mostre o resto da divisão entre eles.", hint: "Use o operador %", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
-        { id: 9, title: "Horas para Minutos", desc: "Leia um valor em horas e transforme em minutos (horas * 60).", hint: "Dica: use int.", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
-        { id: 10, title: "Sucessor Inteiro", desc: "Leia um número e mostre o sucessor dele (n + 1).", hint: "Ex: Entrou 5, sai 6.", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
+        // FUNDAMENTOS (1-15)
+        { id: 1, modulo: 'BASE', title: "Primeiro Protocolo", desc: "Todo sistema precisa de um sinal de vida. Implemente a função principal e utilize o fluxo de saída padrão (cout) para exibir a mensagem 'Ola Mundo'. Não esqueça de incluir a biblioteca iostream.", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << \"Ola Mundo\";\n    return 0;\n}" },
+        { id: 2, modulo: 'BASE', title: "Alocação de Dados", desc: "Um sistema financeiro precisa somar dois valores inteiros. Declare duas variáveis, A com valor 15 e B com valor 25. Crie uma terceira variável chamada 'resultado' para armazenar a soma e exiba o valor final.", code: "" },
+        { id: 3, modulo: 'BASE', title: "Captura de Input", desc: "Crie um programa interativo. Peça para o usuário digitar sua idade usando 'cin'. Em seguida, exiba uma frase formatada: 'Confirmado: Voce tem X anos', onde X é o valor digitado.", code: "" },
+        { id: 4, modulo: 'BASE', title: "Processador de Dobro", desc: "O sistema recebeu um sinal numérico N. Sua tarefa é ler esse número inteiro e exibir o dobro dele. Exemplo: se entrar 5, deve sair 10.", code: "" },
+        { id: 5, modulo: 'BASE', title: "Engenharia de Terreno", desc: "Um arquiteto precisa calcular a área de um escritório. Leia dois valores decimais (double): a largura e o comprimento. Exiba o cálculo da área total (largura * comprimento).", code: "" },
+        { id: 6, modulo: 'BASE', title: "Média Acadêmica", desc: "O portal do aluno precisa de um calculador de médias. Receba duas notas decimais, calcule a média aritmética entre elas e exiba o resultado com uma mensagem amigável.", code: "" },
+        { id: 7, modulo: 'BASE', title: "Aritmética de Resto", desc: "Algoritmos de criptografia costumam usar o resto da divisão. Leia um número inteiro e exiba o resto da divisão desse número por 2 (operador %).", code: "" },
+        { id: 8, modulo: 'BASE', title: "Câmbio Digital", desc: "Você está criando um app de viagens. O usuário digita um valor em Reais e o sistema deve converter para Dólares. Considere a cotação fixa de 1 Dólar = 5.00 Reais.", code: "" },
+        { id: 9, modulo: 'BASE', title: "Cronômetro de Vida", desc: "Peça o ano de nascimento do usuário e o ano atual. Calcule e exiba quantos anos a pessoa completará neste ano.", code: "" },
+        { id: 10, modulo: 'BASE', title: "Autonomia de Voo", desc: "Um drone precisa saber sua autonomia. Leia a distância percorrida (km) e o combustível gasto (litros). Exiba o consumo médio (km/l).", code: "" },
+        { id: 11, modulo: 'BASE', title: "Permutação de Memória", desc: "Você tem duas variáveis, A e B. O desafio é trocar os valores entre elas: o que está em A vai para B e vice-versa. Dica: você precisará de uma terceira variável 'auxiliar'.", code: "" },
+        { id: 12, modulo: 'BASE', title: "Raio de Alcance", desc: "Calcule a área de um círculo. O usuário fornece o raio (R). Use a fórmula: Area = 3.14159 * R * R.", code: "" },
+        { id: 13, modulo: 'BASE', title: "Checkout de Vendas", desc: "Uma loja oferece 10% de desconto em todos os produtos. Leia o preço original de um item e exiba o novo valor com o desconto aplicado.", code: "" },
+        { id: 14, modulo: 'BASE', title: "Conversor de Época", desc: "O sistema trabalha com minutos. Leia um valor de Horas e um valor de Minutos. Converta tudo para o total de minutos e exiba.", code: "" },
+        { id: 15, modulo: 'BASE', title: "Média Ponderada", desc: "Calcule a média de 3 números, mas trate o resultado como um número decimal (float/double) mesmo que os números de entrada sejam inteiros.", code: "" },
 
-        // FASE 2: CONDICIONAIS (IF/ELSE)
-        { id: 11, title: "Verificar Maioridade", desc: "Leia a idade. Se for >= 18 imprima 'Maior', senão 'Menor'.", hint: "Use if(idade >= 18)", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
-        { id: 12, title: "Par ou Ímpar", desc: "Leia um número e diga se é Par ou Impar.", hint: "Use if (n % 2 == 0)", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
-        { id: 13, title: "Positivo ou Negativo", desc: "Diga se o número é Positivo, Negativo ou Zero.", hint: "Use else if", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
-        { id: 14, title: "Maior de Dois", desc: "Leia A e B e imprima apenas o maior valor.", hint: "if (a > b) { cout << a; }", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
-        { id: 15, title: "Aprovação Escolar", desc: "Leia a nota. Se nota >= 7 'Aprovado', < 7 'Reprovado'.", hint: "Use if / else.", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
-        { id: 16, title: "Login de Senha", desc: "Peça a senha (int). Se for 2024 imprima 'Acesso Liberado', senão 'Negado'.", hint: "if (senha == 2024)", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
-        { id: 17, title: "Calculadora de Desconto", desc: "Leia o valor da compra. Se for > 100, aplique 10% de desconto.", hint: "preco * 0.9", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
-        { id: 18, title: "Múltiplo de 5", desc: "Verifique se um número digitado é múltiplo de 5.", hint: "n % 5 == 0", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
-        { id: 19, title: "Vogal 'A'", desc: "Leia um caractere (char). Se for 'a' imprima 'Vogal', senão 'Outro'.", hint: "if (letra == 'a')", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
-        { id: 20, title: "Triângulo Válido", desc: "Leia 3 lados. Se a soma de dois for maior que o terceiro, é 'Valido'.", hint: "if(a+b > c && a+c > b ...)", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
+        // LÓGICA (16-35)
+        { id: 16, modulo: 'IF', title: "Controle de Acesso", desc: "Crie uma trava lógica: se a idade digitada for 18 ou mais, exiba 'Entrada Liberada'. Caso contrário, exiba 'Acesso Negado'.", code: "" },
+        { id: 17, modulo: 'IF', title: "Fiscalização de Velocidade", desc: "Um radar monitora uma via de 80km/h. Se a velocidade do carro for maior que 80, exiba 'Multado!'. Se for menor ou igual, exiba 'Velocidade Segura'.", code: "" },
+        { id: 18, modulo: 'IF', title: "Detector de Paridade", desc: "O usuário insere um número inteiro. O sistema deve responder se esse número é 'PAR' ou 'IMPAR'. Dica: use o operador de resto (%).", code: "" },
+        { id: 19, modulo: 'IF', title: "Duelo Numérico", desc: "Receba dois números inteiros distintos e exiba apenas o maior entre eles no console.", code: "" },
+        { id: 20, modulo: 'IF', title: "Análise de Saldo", desc: "Leia um valor. Se for maior que 0, exiba 'Positivo'. Se for menor que 0, exiba 'Negativo'. Se for exatamente 0, exiba 'Zero'.", code: "" },
+        { id: 21, modulo: 'IF', title: "Situação Escolar Pro", desc: "Leia a média de um aluno. Regras: Média >= 7 (Aprovado). Média entre 5 e 6.9 (Recuperação). Média abaixo de 5 (Reprovado).", code: "" },
+        { id: 22, modulo: 'IF', title: "Múltiplo de Cinco", desc: "Verifique se o número inserido é múltiplo de 5 (ou seja, se a divisão por 5 deixa resto zero).", code: "" },
+        { id: 23, modulo: 'IF', title: "Calculadora de Sinais", desc: "Peça dois números e um caractere (simbolizando a operação: '+' ou '-'). Use IF ou SWITCH para realizar a conta correta baseada no sinal.", code: "" },
+        { id: 24, modulo: 'IF', title: "Validação de Credenciais", desc: "O sistema está protegido por senha. Leia uma senha inteira do usuário. Se for '1234', exiba 'Acesso Concedido'. Senão, exiba 'Senha Incorreta'.", code: "" },
+        { id: 25, modulo: 'IF', title: "Teorema do Triângulo", desc: "Leia três valores (A, B, C). Verifique se eles podem formar um triângulo (a soma de dois lados deve ser sempre maior que o terceiro).", code: "" },
+        { id: 26, modulo: 'IF', title: "Seletor de Calendário", desc: "Leia um número de 1 a 12 e exiba o nome do mês correspondente (1 para Janeiro, etc). Use a estrutura SWITCH para praticar.", code: "" },
+        { id: 27, modulo: 'IF', title: "Plano de Carreira", desc: "Calcule o aumento: Se o salário for até R$ 1000, o aumento é de 20%. Se for maior, o aumento é de 10%. Exiba o novo salário.", code: "" },
+        { id: 28, modulo: 'IF', title: "Tribunal Eleitoral", desc: "Leia a idade. Informe se o voto é: 'Facultativo' (16, 17 ou >70) ou 'Obrigatorio' (entre 18 e 70).", code: "" },
+        { id: 29, modulo: 'IF', title: "Monitor de Saúde", desc: "Calcule o IMC (peso / altura * altura). Se o resultado for maior que 25, exiba 'Acima do peso'. Senão, 'Peso normal'.", code: "" },
+        { id: 30, modulo: 'IF', title: "Lógica Combinada", desc: "Leia um número e verifique se ele é divisível por 3 E por 4 ao mesmo tempo. Exiba 'Divisivel' ou 'Nao divisivel'.", code: "" },
+        { id: 31, modulo: 'IF', title: "Triagem de Letras", desc: "Leia um caractere (char). Verifique se ele é uma vogal (a, e, i, o, u) e informe o resultado.", code: "" },
+        { id: 32, modulo: 'IF', title: "Ponto Zero", desc: "Leia as coordenadas X e Y de um ponto. Se ambas forem zero, informe que o ponto está na 'Origem'.", code: "" },
+        { id: 33, modulo: 'IF', title: "O Menor de Três", desc: "Receba três números inteiros e utilize a lógica de comparação para encontrar e exibir qual é o menor deles.", code: "" },
+        { id: 34, modulo: 'IF', title: "Contagem para 18", desc: "Peça a idade. Se for menor que 18, calcule e diga quantos anos faltam para a pessoa atingir a maioridade.", code: "" },
+        { id: 35, modulo: 'IF', title: "Ano do Calendário", desc: "Verifique se um ano é bissexto. Regra básica: divisível por 4 e não divisível por 100 (exceto se for divisível por 400).", code: "" },
 
-        // FASE 3: LOOPS E AVANÇADO
-        { id: 21, title: "Contagem de 1 a 10", desc: "Use um loop 'for' para imprimir números de 1 a 10.", hint: "for(int i=1; i<=10; i++)", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
-        { id: 22, title: "Tabuada Fixa", desc: "Use um loop para mostrar a tabuada do 7 (7x1 até 7x10).", hint: "cout << \"7 x \" << i << \" = \" << 7*i;", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
-        { id: 23, title: "Soma Acumulada", desc: "Calcule a soma de todos os números de 1 até 50.", hint: "Crie uma variável soma = 0 antes do loop.", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
-        { id: 24, title: "Números Pares 1-20", desc: "Imprima todos os números pares entre 1 e 20 usando um loop.", hint: "if(i % 2 == 0)", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
-        { id: 25, title: "Fatorial de N", desc: "Leia um número e calcule o fatorial dele (ex: 5! = 120).", hint: "Use um loop multiplicando os valores.", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
-        { id: 26, title: "Contagem Regressiva", desc: "Faça um loop que conte de 10 até 0.", hint: "for(int i=10; i>=0; i--)", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
-        { id: 27, title: "Média de N Números", desc: "Leia 5 números em um loop e ao final mostre a média deles.", hint: "Some tudo dentro do loop e divida por 5 no fim.", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
-        { id: 28, title: "Potência Quadrada", desc: "Imprima o quadrado dos números de 1 a 5.", hint: "cout << i * i;", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
-        { id: 29, title: "Busca de Número", desc: "Leia 5 números. Se algum deles for 0, imprima 'Zero encontrado'.", hint: "Use if dentro do for.", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
-        { id: 30, title: "CALCULADORA COMPLETA", desc: "Leia n1, o operador (+, -, *, /) e n2. Use switch para mostrar o resultado.", hint: "switch(operador) { case '+': ... }", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    float n1, n2;\n    char op;\n    cout << \"Digite: Num1 Operador Num2\\n\";\n    // Resolva o desafio final!\n    return 0;\n}" }
+        // LOOPS (36-55)
+        
+        { id: 36, modulo: 'LOOP', title: "Sequência de Lançamento", desc: "Utilize um loop FOR para exibir uma contagem regressiva de 10 até 0 no console.", code: "" },
+        { id: 37, modulo: 'LOOP', title: "Eco Infinito", desc: "Leia um número N. Use um loop para exibir a palavra 'Eco...' exatamente N vezes.", code: "" },
+        { id: 38, modulo: 'LOOP', title: "Tabuada Dinâmica", desc: "O usuário escolhe um número X. O sistema deve imprimir a tabuada de 1 a 10 para esse número.", code: "" },
+        { id: 39, modulo: 'LOOP', title: "Somador Acumulativo", desc: "Calcule a soma de todos os números de 1 até 100 usando um loop e exiba o total final.", code: "" },
+        { id: 40, modulo: 'LOOP', title: "Filtro de Pares", desc: "Percorra os números de 1 a 50 e exiba no console apenas aqueles que forem números pares.", code: "" },
+        { id: 41, modulo: 'LOOP', title: "Média de Lote", desc: "Peça para o usuário digitar 5 notas. Use um loop para ler essas notas e calcule a média.", code: "" },
+        { id: 42, modulo: 'LOOP', title: "Cálculo de Fatorial", desc: "Leia um número N e calcule o seu fatorial (N!). Exemplo: 5! = 120.", code: "" },
+        { id: 43, modulo: 'LOOP', title: "Input Robusto", desc: "Peça uma nota entre 0 e 10. Enquanto for inválida, continue pedindo.", code: "" },
+        { id: 44, modulo: 'LOOP', title: "Potenciação Manual", desc: "Leia base e expoente e calcule a potência usando um loop.", code: "" },
+        { id: 45, modulo: 'LOOP', title: "Série de Fibonacci", desc: "Exiba os 10 primeiros números da sequência de Fibonacci.", code: "" },
+        { id: 46, modulo: 'LOOP', title: "Lista de Divisores", desc: "Dado um número N, encontre todos os seus divisores exatos.", code: "" },
+        { id: 47, modulo: 'LOOP', title: "Teste de Primalidade", desc: "Verifique se um número N é primo.", code: "" },
+        { id: 48, modulo: 'LOOP', title: "Intervalo de Ímpares", desc: "Soma de todos os números ímpares dentro de um intervalo [A, B].", code: "" },
+        { id: 49, modulo: 'LOOP', title: "Tabela de Quadrados", desc: "Exiba os números de 1 a 20 e seus respectivos quadrados.", code: "" },
+        { id: 50, modulo: 'LOOP', title: "Busca de Mínimo", desc: "Receba 10 números e identifique qual foi o menor digitado.", code: "" },
+        { id: 51, modulo: 'LOOP', title: "Censo Numérico", desc: "Leia números até digitar 0. Diga quantos eram negativos.", code: "" },
+        { id: 52, modulo: 'LOOP', title: "Salto de Três", desc: "Exiba múltiplos de 3 situados entre 1 e 100.", code: "" },
+        { id: 53, modulo: 'LOOP', title: "Média sob Demanda", desc: "O usuário decide quantos números quer digitar para tirar a média.", code: "" },
+        { id: 54, modulo: 'LOOP', title: "Impressão de Padrão", desc: "Leia N e imprima uma linha com N asteriscos.", code: "" },
+        { id: 55, modulo: 'LOOP', title: "Sistema de Saída", desc: "Menu simples (1-Continuar, 0-Sair). Repita até ser 0.", code: "" },
+
+        // VECTOR (61-70)
+        { id: 61, modulo: 'VEC', title: "Armazém de Preços", desc: "Crie um vector, adicione 3 preços e exiba a soma.", code: "" },
+        { id: 62, modulo: 'VEC', title: "Inversor de Nomes", desc: "Leia 5 nomes e mostre-os na ordem inversa.", code: "" },
+        { id: 63, modulo: 'VEC', title: "Busca de Registro", desc: "Verifique se um ID específico existe no vector de 5 posições.", code: "" },
+        { id: 64, modulo: 'VEC', title: "Gestor de Pilha", desc: "Use pop_back() para remover o último item e mostre o size.", code: "" },
+        { id: 65, modulo: 'VEC', title: "Top Score", desc: "Encontre a maior nota em um vector de 10 posições.", code: "" },
+        { id: 66, modulo: 'VEC', title: "Filtro de Elite", desc: "Transfira para um novo vector apenas valores > 100.", code: "" },
+        { id: 67, modulo: 'VEC', title: "Upgrade de Dados", desc: "Dobre o valor de todos os elementos do vector.", code: "" },
+        { id: 68, modulo: 'VEC', title: "Média de Container", desc: "Média aritmética de um vector dinâmico.", code: "" },
+        { id: 69, modulo: 'VEC', title: "Ordenação STL", desc: "Ordene os números do vector em ordem crescente usando sort().", code: "" },
+        { id: 70, modulo: 'VEC', title: "Fusão de Listas", desc: "Combine dois vectors em um terceiro.", code: "" },
+
+        // MATRIZ (71-80)
+        { id: 71, modulo: 'MAT', title: "Matriz 2x2", desc: "Declare, preencha e exiba uma matriz 2x2.", code: "" },
+        { id: 72, modulo: 'MAT', title: "Soma de Grade", desc: "Calcule a soma de todos os elementos de uma matriz 3x3.", code: "" },
+        { id: 73, modulo: 'MAT', title: "Matriz Identidade", desc: "Crie uma matriz 3x3 identidade.", code: "" },
+        { id: 74, modulo: 'MAT', title: "Acesso por Coordenada", desc: "Exiba o valor na linha L e coluna C escolhidas pelo usuário.", code: "" },
+        { id: 75, modulo: 'MAT', title: "Análise de Linha", desc: "Maior valor presente na linha 0 da matriz.", code: "" },
+        { id: 76, modulo: 'MAT', title: "Média de Coluna", desc: "Média dos valores da segunda coluna.", code: "" },
+        { id: 77, modulo: 'MAT', title: "Transposição", desc: "Gere a matriz transposta de uma matriz dada.", code: "" },
+        { id: 78, modulo: 'MAT', title: "Contador de Zeros", desc: "Conte os zeros em uma matriz 4x4.", code: "" },
+        { id: 79, modulo: 'MAT', title: "Batalha Naval", desc: "Ache o caractere 'S' escondido na matriz 5x5.", code: "" },
+        { id: 80, modulo: 'MST', title: "SISTEMA DE CINEMA", desc: "DESAFIO FINAL: Gerencie uma sala 5x5. Crie um mapa de assentos (0 vago, 1 ocupado) com sistema de reserva.", code: "" }
     ];
 
     const sidebar = document.getElementById('sidebar');
-    const editor = document.getElementById('code-editor');
+    const editor = document.getElementById('editor');
     const consoleBox = document.getElementById('console');
     let currentId = 1;
 
-    // Gerar lista na barra lateral
-    questions.forEach(q => {
-        const item = document.createElement('div');
-        item.className = 'q-item';
-        item.id = `nav-${q.id}`;
-        item.innerHTML = `<b>${q.id}.</b> ${q.title}`;
-        item.onclick = () => loadQuestion(q.id);
-        sidebar.appendChild(item);
-    });
+    function toggleTheory(show) {
+        document.getElementById('theory-modal').style.display = show ? 'flex' : 'none';
+    }
 
-    function loadQuestion(id) {
+    function load(id) {
         currentId = id;
         const q = questions.find(x => x.id === id);
-        
-        document.getElementById('title').innerText = q.title;
-        document.getElementById('desc').innerText = q.desc;
-        
-        // Verifica se a dica existe antes de tentar colocar na tela
-        const hintEl = document.getElementById('hint');
-        if(hintEl) {
-            hintEl.innerText = q.hint || "";
-        }
-
-        document.getElementById('stat').innerText = `Questão ${id} de 30`;
-        
-        const saved = localStorage.getItem(`cpp_pro_v2_${id}`);
-        editor.value = saved || q.code;
-
+        document.getElementById('q-title').innerText = `${String(q.id).padStart(2, '0')} // ${q.title}`;
+        document.getElementById('q-desc').innerText = q.desc;
+        editor.value = localStorage.getItem(`cpp_final_v9_q${id}`) || q.code || "#include <iostream>\nusing namespace std;\n\nint main() {\n    // Codifique seu algoritmo aqui\n    \n    return 0;\n}";
         document.querySelectorAll('.q-item').forEach(el => el.classList.remove('q-active'));
-        document.getElementById(`nav-${id}`).classList.add('q-active');
-        consoleBox.innerText = "Aguardando execução...";
+        document.getElementById(`item-${id}`).classList.add('q-active');
+        consoleBox.innerText = "Pronto para codificar a questão " + id + "...";
     }
 
-    function runCpp() {
-        consoleBox.innerHTML = "Compilando main.cpp...\nExecutando terminal...\n----------------------\n";
-        const code = editor.value;
-        localStorage.setItem(`cpp_pro_v2_${currentId}`, code);
-
-        // Simulador de Output (Procura tudo que está entre aspas)
-        const outputs = code.match(/"([^"]+)"/g);
-        
-        // Simulador de Input (Se o usuário usar o comando cin)
-        if(code.includes("cin >>")) {
-            const userInput = prompt("Terminal C++ (cin):\nDigite os dados que o seu código está pedindo:");
-            if(userInput) {
-                consoleBox.innerHTML += ">> cin: " + userInput + "\n";
-            }
-        }
-
-        if(outputs) {
-            outputs.forEach(m => {
-                consoleBox.innerHTML += m.replace(/"/g, "") + "\n";
-            });
-        } else {
-            consoleBox.innerHTML += "[Sucesso] Código compilado sem erros de sintaxe.\n(Nota: use o comando std::cout << \"texto\"; para exibir algo na tela)";
-        }
+    function salvar() {
+        localStorage.setItem(`cpp_final_v9_q${currentId}`, editor.value);
+        consoleBox.innerHTML = `<div><span style="color:var(--accent)">[SYSTEM]</span> Questão ${currentId} compilada com sucesso e salva em cache.</div>`;
+        updateProg();
     }
 
-    // Inicia a primeira questão assim que a página carrega
-    loadQuestion(1);
+    function updateProg() {
+        let count = 0;
+        questions.forEach(q => { if(localStorage.getItem(`cpp_final_v9_q${q.id}`)) count++; });
+        let percent = Math.round((count/80)*100);
+        document.getElementById('prog-txt').innerText = `${percent}%`;
+        document.getElementById('prog-fill').style.width = `${percent}%`;
+    }
+
+    function init() {
+        questions.sort((a,b) => a.id - b.id).forEach(q => {
+            const div = document.createElement('div');
+            div.className = 'q-item';
+            div.id = `item-${q.id}`;
+            div.innerHTML = `<span>MOD_${q.modulo}</span><b>${String(q.id).padStart(2, '0')}. ${q.title}</b>`;
+            div.onclick = () => load(q.id);
+            sidebar.appendChild(div);
+        });
+        load(1);
+        updateProg();
+    }
+
+    window.addEventListener('keydown', (e) => { if(e.key === "Escape") toggleTheory(false); });
+    window.onload = init;
 </script>
 </body>
 </html>
