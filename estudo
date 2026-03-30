@@ -5,11 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>C++ Master - 30 Desafios</title>
     <style>
-        /* =========================================
-           VARIÁVEIS & CONFIGURAÇÕES GERAIS
-        ========================================= */
         :root {
-            --cpp-blue: #00599C; /* Azul oficial do C++ */
+            --cpp-blue: #00599C;
             --cpp-light: #659ad2;
             --bg-main: #0d1117;
             --bg-surface: #161b22;
@@ -20,14 +17,10 @@
             --border-color: #30363d;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--bg-main);
             color: var(--text-main);
             display: flex;
@@ -36,9 +29,6 @@
             overflow: hidden;
         }
 
-        /* =========================================
-           CABEÇALHO
-        ========================================= */
         header {
             background: var(--bg-surface);
             padding: 15px 25px;
@@ -50,32 +40,16 @@
             z-index: 10;
         }
 
-        .logo { 
-            font-weight: 800; 
-            color: var(--cpp-light); 
-            font-size: 1.2rem; 
-            letter-spacing: 1px;
-        }
+        .logo { font-weight: 800; color: var(--cpp-light); font-size: 1.2rem; letter-spacing: 1px;}
+        #progresso { font-size: 0.9rem; color: var(--text-muted); font-weight: 600;}
 
-        #progresso {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            font-weight: 600;
-        }
-
-        /* =========================================
-           LAYOUT PRINCIPAL (GRID)
-        ========================================= */
         main {
             display: grid;
             grid-template-columns: 280px 1fr;
             flex: 1;
-            height: calc(100vh - 56px); /* Subtrai a altura do header */
+            height: calc(100vh - 56px);
         }
 
-        /* =========================================
-           BARRA LATERAL (MENU DE DESAFIOS)
-        ========================================= */
         #sidebar {
             background: var(--bg-surface);
             border-right: 1px solid var(--border-color);
@@ -83,7 +57,6 @@
             padding: 15px;
         }
 
-        /* Estilização da barra de rolagem */
         #sidebar::-webkit-scrollbar { width: 8px; }
         #sidebar::-webkit-scrollbar-track { background: var(--bg-surface); }
         #sidebar::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
@@ -100,11 +73,7 @@
             color: var(--text-muted);
         }
 
-        .q-item:hover { 
-            background: rgba(255, 255, 255, 0.05); 
-            color: var(--text-main);
-        }
-
+        .q-item:hover { background: rgba(255, 255, 255, 0.05); color: var(--text-main); }
         .q-active { 
             border-left-color: var(--primary-accent); 
             background: rgba(46, 160, 67, 0.1); 
@@ -112,14 +81,7 @@
             font-weight: 600;
         }
 
-        /* =========================================
-           ÁREA DE CONTEÚDO E EDITOR
-        ========================================= */
-        #content {
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-        }
+        #content { display: flex; flex-direction: column; overflow: hidden; }
 
         #info {
             padding: 20px 30px;
@@ -127,18 +89,8 @@
             border-bottom: 1px solid var(--border-color);
         }
 
-        #q-title {
-            color: var(--primary-accent);
-            margin-bottom: 8px;
-            font-size: 1.5rem;
-        }
-
-        #q-desc {
-            color: var(--text-main);
-            font-size: 1rem;
-            line-height: 1.5;
-            margin-bottom: 15px;
-        }
+        #q-title { color: var(--primary-accent); margin-bottom: 8px; font-size: 1.5rem; }
+        #q-desc { color: var(--text-main); font-size: 1rem; line-height: 1.5; margin-bottom: 15px; }
 
         .btn-hint {
             background: transparent;
@@ -151,94 +103,52 @@
             transition: 0.2s;
         }
 
-        .btn-hint:hover {
-            border-color: var(--text-muted);
-            color: var(--text-main);
-        }
+        .btn-hint:hover { border-color: var(--text-muted); color: var(--text-main); }
 
         #hint { 
-            color: #d2a8ff; 
-            font-size: 0.9rem; 
-            margin-top: 10px; 
-            font-style: italic; 
-            display: none; 
-            padding: 10px;
-            background: rgba(210, 168, 255, 0.1);
-            border-radius: 4px;
+            color: #d2a8ff; font-size: 0.9rem; margin-top: 10px; 
+            font-style: italic; display: none; padding: 10px;
+            background: rgba(210, 168, 255, 0.1); border-radius: 4px;
         }
 
         #editor-container {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            background: var(--bg-editor);
-            position: relative;
+            flex: 1; display: flex; flex-direction: column;
+            background: var(--bg-editor); position: relative;
         }
 
         .toolbar {
-            background: #111;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            background: #111; padding: 10px 20px; display: flex;
+            justify-content: space-between; align-items: center;
             border-bottom: 1px solid #000;
         }
 
         .file-name {
-            font-family: 'Consolas', monospace;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-            background: var(--bg-editor);
-            padding: 5px 15px;
-            border-radius: 4px 4px 0 0;
+            font-family: 'Consolas', monospace; font-size: 0.85rem;
+            color: var(--text-muted); background: var(--bg-editor);
+            padding: 5px 15px; border-radius: 4px 4px 0 0;
             border-top: 2px solid var(--cpp-blue);
         }
 
         .btn-run {
-            background: var(--primary-accent);
-            color: #fff;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 4px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            background: var(--primary-accent); color: #fff;
+            border: none; padding: 8px 20px; border-radius: 4px;
+            font-weight: 600; cursor: pointer; transition: background 0.2s;
         }
 
-        .btn-run:hover { 
-            background: #3fb950; 
-        }
+        .btn-run:hover { background: #3fb950; }
 
         textarea {
-            flex: 1;
-            width: 100%;
-            background: var(--bg-editor);
-            color: #d4d4d4;
-            padding: 20px;
-            border: none;
-            font-family: 'Consolas', 'Courier New', monospace;
-            font-size: 1rem;
-            line-height: 1.5;
-            outline: none;
-            resize: none;
+            flex: 1; width: 100%; background: var(--bg-editor);
+            color: #d4d4d4; padding: 20px; border: none;
+            font-family: 'Consolas', monospace; font-size: 1rem;
+            line-height: 1.5; outline: none; resize: none;
         }
 
-        /* =========================================
-           CONSOLE DE SAÍDA
-        ========================================= */
         #console {
-            height: 200px;
-            background: #000;
-            color: #00ff00;
-            padding: 15px 25px;
-            font-family: 'Consolas', monospace;
-            font-size: 0.9rem;
-            overflow-y: auto;
-            border-top: 1px solid var(--border-color);
-            line-height: 1.4;
+            height: 200px; background: #000; color: #00ff00;
+            padding: 15px 25px; font-family: 'Consolas', monospace;
+            font-size: 0.9rem; overflow-y: auto;
+            border-top: 1px solid var(--border-color); line-height: 1.4;
         }
 
         .console-error { color: #ff7b72; }
@@ -271,14 +181,19 @@
             <textarea id="editor" spellcheck="false"></textarea>
         </div>
 
-        <div id="console">Aguardando execução...</div>
+        <div id="console">Sistema iniciado com sucesso. Aguardando execução...</div>
     </section>
 </main>
 
 <script>
-    // =========================================
-    // DADOS E ESTADO DA APLICAÇÃO
-    // =========================================
+    // Monitor global de erros para avisar visualmente se algo crítico quebrar
+    window.onerror = function(msg, url, line) {
+        const consoleDiv = document.getElementById('console');
+        if(consoleDiv) {
+            consoleDiv.innerHTML += `<br><span class="console-error">Erro crítico no sistema JS: ${msg} (Verifique console do navegador).</span>`;
+        }
+    };
+
     const exerciciosBase = [
         {
             id: 1,
@@ -313,4 +228,148 @@
     let exercicios = [...exerciciosBase];
     let atual = 1;
 
-    // Element
+    // Variáveis que guardarão os elementos HTML (iniciam vazias)
+    let sidebar, editor, consoleDiv, btnRun, btnToggleHint, hintDiv;
+
+    // O código só roda quando a página estiver 100% pronta
+    document.addEventListener('DOMContentLoaded', () => {
+        // Vincula as variáveis ao HTML
+        sidebar = document.getElementById('sidebar');
+        editor = document.getElementById('editor');
+        consoleDiv = document.getElementById('console');
+        btnRun = document.getElementById('btn-run');
+        btnToggleHint = document.getElementById('btn-toggle-hint');
+        hintDiv = document.getElementById('hint');
+
+        gerarDesafiosFaltantes();
+        renderizarSidebar();
+        configurarEventos();
+        carregarDesafio(1);
+    });
+
+    function gerarDesafiosFaltantes() {
+        for (let i = 1; i <= 30; i++) {
+            if (!exercicios.find(x => x.id === i)) {
+                exercicios.push({
+                    id: i,
+                    titulo: `Lógica C++ Nível ${i}`,
+                    desc: `Pratique a sintaxe de C++. Resolva o desafio proposto estruturando seu pensamento lógico para o nível ${i}.`,
+                    hint: "Estruture o problema em passos pequenos. Use cin para entrada e cout para saída.",
+                    padrao: "#include <iostream>\nusing namespace std;\n\nint main() {\n    // Pratique aqui\n    return 0;\n}"
+                });
+            }
+        }
+        exercicios.sort((a, b) => a.id - b.id);
+    }
+
+    function renderizarSidebar() {
+        sidebar.innerHTML = '';
+        exercicios.forEach(ex => {
+            const item = document.createElement('div');
+            item.className = 'q-item';
+            item.id = `nav-${ex.id}`;
+            item.innerHTML = `<strong>${ex.id}.</strong> ${ex.titulo}`;
+            item.addEventListener('click', () => carregarDesafio(ex.id));
+            sidebar.appendChild(item);
+        });
+    }
+
+    function configurarEventos() {
+        btnRun.addEventListener('click', simularCompilacao);
+
+        btnToggleHint.addEventListener('click', () => {
+            const isHidden = hintDiv.style.display === 'none' || hintDiv.style.display === '';
+            hintDiv.style.display = isHidden ? 'block' : 'none';
+            btnToggleHint.innerText = isHidden ? 'OCULTAR DICA' : 'VER DICA';
+        });
+
+        editor.addEventListener('input', () => {
+            // Bloco try-catch para impedir travamento por bloqueio de permissão local
+            try {
+                localStorage.setItem(`cpp_save_${atual}`, editor.value);
+            } catch (e) {
+                console.warn("Salvamento automático bloqueado pelo navegador.");
+            }
+        });
+    }
+
+    function carregarDesafio(id) {
+        atual = id;
+        const ex = exercicios.find(x => x.id === id);
+        
+        document.getElementById('q-title').innerText = ex.titulo;
+        document.getElementById('q-desc').innerText = ex.desc;
+        hintDiv.innerText = ex.hint;
+        
+        hintDiv.style.display = 'none';
+        btnToggleHint.innerText = 'VER DICA';
+        document.getElementById('progresso').innerText = `Nível ${id} de 30`;
+        
+        // Tenta buscar código salvo. Se der erro (ex: bloqueio), usa o padrão.
+        let salvo = null;
+        try {
+            salvo = localStorage.getItem(`cpp_save_${id}`);
+        } catch (e) {
+            console.warn("Leitura bloqueada pelo navegador.");
+        }
+        
+        editor.value = salvo || ex.padrao;
+
+        document.querySelectorAll('.q-item').forEach(e => e.classList.remove('q-active'));
+        document.getElementById(`nav-${id}`).classList.add('q-active');
+    }
+
+    function simularCompilacao() {
+        const codigo = editor.value;
+        limparConsole();
+        logConsole("Compilando main.cpp...", "console-system");
+        
+        setTimeout(() => {
+            logConsole("Executando...\n", "console-system");
+
+            if (!codigo.includes("int main()")) {
+                logConsole("Erro Fatal: A função 'int main()' não foi encontrada.", "console-error");
+                return;
+            }
+
+            try {
+                let teveSaida = false;
+                const regexCoutStrings = /(?:std::cout|cout)\s*<<\s*"([^"]*)"/g;
+                let matchString;
+                while ((matchString = regexCoutStrings.exec(codigo)) !== null) {
+                    logConsole(matchString[1]);
+                    teveSaida = true;
+                }
+
+                if (codigo.includes("cin >>") || codigo.includes("std::cin >>")) {
+                    const input = prompt("Simulação de std::cin. Digite um valor:");
+                    logConsole(`[Entrada de usuário simulada: ${input}]`, "console-system");
+                    teveSaida = true;
+                }
+
+                if (!teveSaida) {
+                    logConsole("[Programa finalizado com sucesso. Nenhuma saída detectada no cout]");
+                }
+
+            } catch (e) {
+                logConsole("Erro de compilação: Sintaxe inválida detectada.", "console-error");
+            }
+
+            logConsole("\nProcesso retornado com código 0 (0x0).", "console-system");
+        }, 600);
+    }
+
+    function logConsole(mensagem, classeCss = "") {
+        const span = document.createElement("div");
+        if (classeCss) span.className = classeCss;
+        span.innerText = mensagem;
+        consoleDiv.appendChild(span);
+        consoleDiv.scrollTop = consoleDiv.scrollHeight; 
+    }
+
+    function limparConsole() {
+        consoleDiv.innerHTML = '';
+    }
+</script>
+</body>
+</html>
