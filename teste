@@ -3,373 +3,307 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>C++ Master - 30 Desafios</title>
+    <title> Os D ta oq?| Enterprise Edition</title>
     <style>
         :root {
-            --cpp-blue: #00599C;
-            --cpp-light: #659ad2;
-            --bg-main: #0d1117;
-            --bg-surface: #161b22;
-            --bg-editor: #1e1e1e;
-            --text-main: #c9d1d9;
-            --text-muted: #8b949e;
-            --primary-accent: #2ea043;
-            --border-color: #30363d;
+            --bg-dark: #080a0f;
+            --surface: #11141b;
+            --surface-light: #1c212c;
+            --primary: #4a90e2;
+            --accent: #00e676;
+            --text-main: #e6edf3;
+            --text-dim: #8b949e;
+            --border: #30363d;
+            --code-bg: #0d1117;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        * { box-sizing: border-box; transition: all 0.2s ease; }
+        body { font-family: 'Inter', system-ui, sans-serif; background: var(--bg-dark); color: var(--text-main); margin: 0; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: var(--bg-main);
-            color: var(--text-main);
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
-            overflow: hidden;
-        }
+        /* HEADER */
+        header { height: 65px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 30px; z-index: 100; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+        .logo { font-size: 1.1rem; font-weight: 800; letter-spacing: 1px; color: var(--primary); }
+        .logo span { color: var(--text-main); }
 
-        header {
-            background: var(--bg-surface);
-            padding: 15px 25px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid var(--cpp-blue);
-            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
-            z-index: 10;
-        }
+        .progress-container { width: 220px; }
+        .progress-bar-bg { background: #21262d; height: 6px; border-radius: 10px; overflow: hidden; margin-top: 5px; }
+        .progress-bar-fill { background: var(--accent); height: 100%; width: 0%; box-shadow: 0 0 10px var(--accent); }
 
-        .logo { font-weight: 800; color: var(--cpp-light); font-size: 1.2rem; letter-spacing: 1px;}
-        #progresso { font-size: 0.9rem; color: var(--text-muted); font-weight: 600;}
+        .btn-theory { background: var(--surface-light); border: 1px solid var(--border); color: var(--primary); padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 0.85rem; }
+        .btn-theory:hover { background: var(--primary); color: white; transform: translateY(-2px); }
 
-        main {
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            flex: 1;
-            height: calc(100vh - 56px);
-        }
+        main { flex: 1; display: flex; overflow: hidden; position: relative; }
 
-        #sidebar {
-            background: var(--bg-surface);
-            border-right: 1px solid var(--border-color);
+        /* MODAL DE TEORIA (CONTEÚDO COMPLETO) */
+        #theory-modal { 
+            display: none; 
+            position: absolute; 
+            top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(8, 10, 15, 0.95); 
+            backdrop-filter: blur(15px); 
+            z-index: 500; 
+            justify-content: center; 
+            padding: 50px 20px; 
             overflow-y: auto;
-            padding: 15px;
         }
+        .theory-content { max-width: 900px; width: 100%; position: relative; animation: slideUp 0.3s ease; }
+        @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
 
-        #sidebar::-webkit-scrollbar { width: 8px; }
-        #sidebar::-webkit-scrollbar-track { background: var(--bg-surface); }
-        #sidebar::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+        .theory-card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 45px; box-shadow: 0 25px 60px rgba(0,0,0,0.6); line-height: 1.7; }
+        .theory-card h1 { color: var(--primary); font-size: 2rem; margin-bottom: 30px; border-bottom: 2px solid var(--border); padding-bottom: 15px; }
+        .theory-card h2 { color: var(--accent); font-size: 1.4rem; margin-top: 40px; display: flex; align-items: center; gap: 10px; }
+        .theory-card h2::before { content: '>'; color: var(--primary); }
+        .theory-card p { color: var(--text-dim); font-size: 1.05rem; margin: 15px 0; }
+        .theory-card ul { padding-left: 20px; margin: 20px 0; }
+        .theory-card li { color: var(--text-dim); margin-bottom: 12px; }
+        .theory-card strong { color: var(--text-main); }
+        .theory-card code { background: var(--code-bg); color: #79c0ff; padding: 3px 8px; border-radius: 5px; font-family: 'Consolas', monospace; font-size: 0.95rem; border: 1px solid var(--border); }
+        
+        .close-theory { position: sticky; top: 0; float: right; background: #ff4d4d; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold; z-index: 600; box-shadow: 0 4px 15px rgba(255,77,77,0.3); }
 
-        .q-item {
-            padding: 12px 15px;
-            margin-bottom: 8px;
-            background: transparent;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.2s ease;
-            border-left: 4px solid transparent;
-            color: var(--text-muted);
-        }
+        /* SIDEBAR E ÁREA DE PRÁTICA */
+        #practice-page { display: grid; grid-template-columns: 320px 1fr; width: 100%; }
+        #sidebar { background: var(--surface); border-right: 1px solid var(--border); overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 8px; font-family: 'Fira Code', 'Consolas', monospace; }
+        
+        .q-item { padding: 14px; border-radius: 10px; cursor: pointer; background: rgba(255,255,255,0.03); border: 1px solid transparent; }
+        .q-item:hover { background: var(--surface-light); border-color: var(--border); }
+        .q-item span { font-size: 0.65rem; color: var(--text-dim); text-transform: uppercase; display: block; margin-bottom: 5px; letter-spacing: 1px; }
+        .q-item b { font-size: 0.85rem; font-weight: 500; }
+        .q-active { background: rgba(74, 144, 226, 0.12) !important; border-color: var(--primary) !important; color: var(--primary); }
 
-        .q-item:hover { background: rgba(255, 255, 255, 0.05); color: var(--text-main); }
-        .q-active { 
-            border-left-color: var(--primary-accent); 
-            background: rgba(46, 160, 67, 0.1); 
-            color: var(--text-main);
-            font-weight: 600;
-        }
-
-        #content { display: flex; flex-direction: column; overflow: hidden; }
-
-        #info {
-            padding: 20px 30px;
-            background: var(--bg-main);
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        #q-title { color: var(--primary-accent); margin-bottom: 8px; font-size: 1.5rem; }
-        #q-desc { color: var(--text-main); font-size: 1rem; line-height: 1.5; margin-bottom: 15px; }
-
-        .btn-hint {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
-            padding: 5px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: 0.2s;
-        }
-
-        .btn-hint:hover { border-color: var(--text-muted); color: var(--text-main); }
-
-        #hint { 
-            color: #d2a8ff; font-size: 0.9rem; margin-top: 10px; 
-            font-style: italic; display: none; padding: 10px;
-            background: rgba(210, 168, 255, 0.1); border-radius: 4px;
-        }
-
-        #editor-container {
-            flex: 1; display: flex; flex-direction: column;
-            background: var(--bg-editor); position: relative;
-        }
-
-        .toolbar {
-            background: #111; padding: 10px 20px; display: flex;
-            justify-content: space-between; align-items: center;
-            border-bottom: 1px solid #000;
-        }
-
-        .file-name {
-            font-family: 'Consolas', monospace; font-size: 0.85rem;
-            color: var(--text-muted); background: var(--bg-editor);
-            padding: 5px 15px; border-radius: 4px 4px 0 0;
-            border-top: 2px solid var(--cpp-blue);
-        }
-
-        .btn-run {
-            background: var(--primary-accent); color: #fff;
-            border: none; padding: 8px 20px; border-radius: 4px;
-            font-weight: 600; cursor: pointer; transition: background 0.2s;
-        }
-
-        .btn-run:hover { background: #3fb950; }
-
-        textarea {
-            flex: 1; width: 100%; background: var(--bg-editor);
-            color: #d4d4d4; padding: 20px; border: none;
-            font-family: 'Consolas', monospace; font-size: 1rem;
-            line-height: 1.5; outline: none; resize: none;
-        }
-
-        #console {
-            height: 200px; background: #000; color: #00ff00;
-            padding: 15px 25px; font-family: 'Consolas', monospace;
-            font-size: 0.9rem; overflow-y: auto;
-            border-top: 1px solid var(--border-color); line-height: 1.4;
-        }
-
-        .console-error { color: #ff7b72; }
-        .console-system { color: #79c0ff; }
+        #workspace { display: grid; grid-template-rows: auto 1fr 180px; background: var(--bg-dark); }
+        .q-info { padding: 25px 35px; background: var(--surface); border-bottom: 1px solid var(--border); }
+        .editor-header { background: #1c212c; padding: 12px 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); }
+        textarea { flex: 1; background: var(--code-bg); color: #79c0ff; padding: 30px; border: none; font-family: 'Consolas', 'Fira Code', monospace; font-size: 15px; outline: none; resize: none; line-height: 1.5; }
+        
+        #console { background: #05070a; color: #00ff00; padding: 20px 35px; font-family: 'Consolas', monospace; font-size: 0.9rem; border-top: 1px solid var(--border); overflow-y: auto; }
+        .btn-run { background: var(--primary); color: white; border: none; padding: 10px 25px; border-radius: 6px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(74,144,226,0.3); }
+        .btn-run:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
 
 <header>
-    <div class="logo">C++ ACADEMY //</div>
-    <div id="progresso">Nível 1 de 30</div>
+    <div class="logo">Os D ta oq?</span></div>
+    <div style="display: flex; gap: 20px; align-items: center;">
+        <button class="btn-theory" onclick="toggleTheory(true)">Cola de Marginal</button>
+        <div class="progress-container">
+            <div style="display: flex; justify-content: space-between; font-size: 0.7rem; font-weight: bold; color: var(--text-dim);">
+                <span>PROCESSO DE APRENDIZADO</span>
+                <span id="prog-txt">0%</span>
+            </div>
+            <div class="progress-bar-bg"><div id="prog-fill" class="progress-bar-fill"></div></div>
+        </div>
+    </div>
 </header>
 
 <main>
-    <nav id="sidebar"></nav>
+    <div id="theory-modal">
+        <div class="theory-content">
+            <button class="close-theory" onclick="toggleTheory(false)">FECHAR (ESC)</button>
+            <div class="theory-card">
+                <h1>Guia de Sobrevivência C++</h1>
+                
+                <h2>1. Introdução à Linguagem</h2>
+                <p>O C++ é uma linguagem de <strong>médio nível</strong>. Isso significa que ela permite manipular hardware diretamente (como ponteiros) enquanto oferece abstrações poderosas (como classes e objetos). É a linguagem base de motores de jogos (Unreal Engine), navegadores e sistemas operacionais.</p>
+                
+                <h2>2. Estrutura Obrigatória</h2>
+                <p>Todo programa precisa de uma biblioteca de entrada/saída e uma função principal:</p>
+                <code>#include &lt;iostream&gt;<br>using namespace std;<br><br>int main() {<br>&nbsp;&nbsp;&nbsp;return 0;<br>}</code>
+                
+                <h2>3. Tipagem e Variáveis</h2>
+                <p>C++ é <strong>estaticamente tipada</strong>, ou seja, você deve declarar o tipo da variável e ele não pode mudar:</p>
+                <ul>
+                    <li><strong>int:</strong> Números inteiros (ex: <code>int idade = 25;</code>)</li>
+                    <li><strong>double/float:</strong> Números decimais (ex: <code>double preco = 19.99;</code>)</li>
+                    <li><strong>char:</strong> Único caractere (ex: <code>char letra = 'A';</code>)</li>
+                    <li><strong>string:</strong> Texto (ex: <code>string nome = "Gemini";</code>)</li>
+                    <li><strong>bool:</strong> Booleano (ex: <code>bool ativo = true;</code>)</li>
+                </ul>
 
-    <section id="content">
-        <div id="info">
-            <h2 id="q-title"></h2>
-            <p id="q-desc"></p>
-            <button id="btn-toggle-hint" class="btn-hint">VER DICA</button>
-            <div id="hint"></div>
-        </div>
+                <h2>4. Entrada e Saída (I/O)</h2>
+                <ul>
+                    <li><strong>cout:</strong> Envia dados para o console. Use <code><<</code>.</li>
+                    <li><strong>cin:</strong> Recebe dados do teclado. Use <code>>></code>.</li>
+                    <li><strong>endl:</strong> Quebra a linha no console.</li>
+                </ul>
 
-        <div id="editor-container">
-            <div class="toolbar">
-                <div class="file-name">main.cpp</div>
-                <button id="btn-run" class="btn-run">▶ COMPILAR E RODAR</button>
+                <h2>5. Estruturas de Decisão (if/else)</h2>
+                <p>Usadas para ramificar a execução do código baseada em condições lógicas:</p>
+                <code>if (idade >= 18) {<br>&nbsp;&nbsp;&nbsp;cout << "Adulto";<br>} else {<br>&nbsp;&nbsp;&nbsp;cout << "Menor";<br>}</code>
+
+                <h2>6. Laços de Repetição (Loops)</h2>
+                <ul>
+                    <li><strong>for:</strong> Ideal para contagens conhecidas (ex: de 1 a 10).</li>
+                    <li><strong>while:</strong> Ideal para condições que dependem do usuário (ex: "repetir enquanto a senha for errada").</li>
+                </ul>
+
+                <h2>7. Arrays e Vectors</h2>
+                <p>Permitem armazenar múltiplos valores do mesmo tipo. O <strong>std::vector</strong> é a versão moderna e dinâmica, que cresce conforme a necessidade usando o comando <code>v.push_back(valor);</code>.</p>
+
+                <h2>8. Matrizes</h2>
+                <p>São arrays multidimensionais (tabelas). Exemplo: <code>int mapa[5][5];</code> cria uma grade com 5 linhas e 5 colunas.</p>
             </div>
-            <textarea id="editor" spellcheck="false"></textarea>
         </div>
+    </div>
 
-        <div id="console">Sistema iniciado com sucesso. Aguardando execução...</div>
-    </section>
+    <div id="practice-page">
+        <aside id="sidebar"></aside>
+        <div id="workspace">
+            <div class="q-info">
+                <h2 id="q-title" style="margin:0; color: var(--primary);"></h2>
+                <p id="q-desc" style="color: var(--text-dim); margin-top: 12px; font-size: 0.98rem; line-height: 1.6;"></p>
+            </div>
+            <div style="display:flex; flex-direction:column; overflow:hidden;">
+                <div class="editor-header">
+                    <span style="font-size: 0.8rem; font-family: monospace; color: var(--text-dim);">workspace/main.cpp</span>
+                    <button class="btn-run" onclick="salvar()">SALVAR E COMPILAR</button>
+                </div>
+                <textarea id="editor" spellcheck="false"></textarea>
+            </div>
+            <div id="console">Terminal: Aguardando compilação...</div>
+        </div>
+    </div>
 </main>
 
 <script>
-    // Monitor global de erros para avisar visualmente se algo crítico quebrar
-    window.onerror = function(msg, url, line) {
-        const consoleDiv = document.getElementById('console');
-        if(consoleDiv) {
-            consoleDiv.innerHTML += `<br><span class="console-error">Erro crítico no sistema JS: ${msg} (Verifique console do navegador).</span>`;
-        }
-    };
+    const questions = [
+        // FUNDAMENTOS (1-15)
+        { id: 1, modulo: 'BASE', title: "Primeiro Protocolo", desc: "Todo sistema precisa de um sinal de vida. Implemente a função principal e utilize o fluxo de saída padrão (cout) para exibir a mensagem 'Ola Mundo'. Não esqueça de incluir a biblioteca iostream.", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    cout << \"Ola Mundo\";\n    return 0;\n}" },
+        { id: 2, modulo: 'BASE', title: "Alocação de Dados", desc: "Um sistema financeiro precisa somar dois valores inteiros. Declare duas variáveis, A com valor 15 e B com valor 25. Crie uma terceira variável chamada 'resultado' para armazenar a soma e exiba o valor final.", code: "" },
+        { id: 3, modulo: 'BASE', title: "Captura de Input", desc: "Crie um programa interativo. Peça para o usuário digitar sua idade usando 'cin'. Em seguida, exiba uma frase formatada: 'Confirmado: Voce tem X anos', onde X é o valor digitado.", code: "" },
+        { id: 4, modulo: 'BASE', title: "Processador de Dobro", desc: "O sistema recebeu um sinal numérico N. Sua tarefa é ler esse número inteiro e exibir o dobro dele. Exemplo: se entrar 5, deve sair 10.", code: "" },
+        { id: 5, modulo: 'BASE', title: "Engenharia de Terreno", desc: "Um arquiteto precisa calcular a área de um escritório. Leia dois valores decimais (double): a largura e o comprimento. Exiba o cálculo da área total (largura * comprimento).", code: "" },
+        { id: 6, modulo: 'BASE', title: "Média Acadêmica", desc: "O portal do aluno precisa de um calculador de médias. Receba duas notas decimais, calcule a média aritmética entre elas e exiba o resultado com uma mensagem amigável.", code: "" },
+        { id: 7, modulo: 'BASE', title: "Aritmética de Resto", desc: "Algoritmos de criptografia costumam usar o resto da divisão. Leia um número inteiro e exiba o resto da divisão desse número por 2 (operador %).", code: "" },
+        { id: 8, modulo: 'BASE', title: "Câmbio Digital", desc: "Você está criando um app de viagens. O usuário digita um valor em Reais e o sistema deve converter para Dólares. Considere a cotação fixa de 1 Dólar = 5.00 Reais.", code: "" },
+        { id: 9, modulo: 'BASE', title: "Cronômetro de Vida", desc: "Peça o ano de nascimento do usuário e o ano atual. Calcule e exiba quantos anos a pessoa completará neste ano.", code: "" },
+        { id: 10, modulo: 'BASE', title: "Autonomia de Voo", desc: "Um drone precisa saber sua autonomia. Leia a distância percorrida (km) e o combustível gasto (litros). Exiba o consumo médio (km/l).", code: "" },
+        { id: 11, modulo: 'BASE', title: "Permutação de Memória", desc: "Você tem duas variáveis, A e B. O desafio é trocar os valores entre elas: o que está em A vai para B e vice-versa. Dica: você precisará de uma terceira variável 'auxiliar'.", code: "" },
+        { id: 12, modulo: 'BASE', title: "Raio de Alcance", desc: "Calcule a área de um círculo. O usuário fornece o raio (R). Use a fórmula: Area = 3.14159 * R * R.", code: "" },
+        { id: 13, modulo: 'BASE', title: "Checkout de Vendas", desc: "Uma loja oferece 10% de desconto em todos os produtos. Leia o preço original de um item e exiba o novo valor com o desconto aplicado.", code: "" },
+        { id: 14, modulo: 'BASE', title: "Conversor de Época", desc: "O sistema trabalha com minutos. Leia um valor de Horas e um valor de Minutos. Converta tudo para o total de minutos e exiba.", code: "" },
+        { id: 15, modulo: 'BASE', title: "Média Ponderada", desc: "Calcule a média de 3 números, mas trate o resultado como um número decimal (float/double) mesmo que os números de entrada sejam inteiros.", code: "" },
 
-    const exerciciosBase = [
-        {
-            id: 1,
-            titulo: "Saída de Dados",
-            desc: "Use 'std::cout' para imprimir a frase exata \"Ola Mundo\" na tela.",
-            hint: "Lembre-se do #include <iostream> e do std::cout << \"texto\";",
-            padrao: "#include <iostream>\n\nint main() {\n    std::cout << \"Ola Mundo\";\n    return 0;\n}"
-        },
-        {
-            id: 2,
-            titulo: "Entrada de Dados",
-            desc: "Crie uma variável inteira, use 'std::cin' para ler um valor e depois imprima-o.",
-            hint: "Declare a variável: int x; Leia com: std::cin >> x;",
-            padrao: "#include <iostream>\n\nint main() {\n    int idade;\n    std::cout << \"Digite sua idade: \";\n    // seu codigo aqui\n    return 0;\n}"
-        },
-        {
-            id: 10,
-            titulo: "Condicional If/Else",
-            desc: "Leia um número e crie uma estrutura para verificar se ele é positivo ou negativo.",
-            hint: "if (n >= 0) { ... } else { ... }",
-            padrao: "#include <iostream>\n\nint main() {\n    int n;\n    std::cin >> n;\n    // seu codigo aqui\n    return 0;\n}"
-        },
-        {
-            id: 30,
-            titulo: "Calculadora C++",
-            desc: "Crie uma calculadora que use switch/case para as 4 operações matemáticas.",
-            hint: "switch(operador) { case '+': ... break; }",
-            padrao: "#include <iostream>\n\nint main() {\n    char op;\n    float n1, n2;\n    // O desafio final!\n    return 0;\n}"
-        }
+        // LÓGICA (16-35)
+        { id: 16, modulo: 'IF', title: "Controle de Acesso", desc: "Crie uma trava lógica: se a idade digitada for 18 ou mais, exiba 'Entrada Liberada'. Caso contrário, exiba 'Acesso Negado'.", code: "" },
+        { id: 17, modulo: 'IF', title: "Fiscalização de Velocidade", desc: "Um radar monitora uma via de 80km/h. Se a velocidade do carro for maior que 80, exiba 'Multado!'. Se for menor ou igual, exiba 'Velocidade Segura'.", code: "" },
+        { id: 18, modulo: 'IF', title: "Detector de Paridade", desc: "O usuário insere um número inteiro. O sistema deve responder se esse número é 'PAR' ou 'IMPAR'. Dica: use o operador de resto (%).", code: "" },
+        { id: 19, modulo: 'IF', title: "Duelo Numérico", desc: "Receba dois números inteiros distintos e exiba apenas o maior entre eles no console.", code: "" },
+        { id: 20, modulo: 'IF', title: "Análise de Saldo", desc: "Leia um valor. Se for maior que 0, exiba 'Positivo'. Se for menor que 0, exiba 'Negativo'. Se for exatamente 0, exiba 'Zero'.", code: "" },
+        { id: 21, modulo: 'IF', title: "Situação Escolar Pro", desc: "Leia a média de um aluno. Regras: Média >= 7 (Aprovado). Média entre 5 e 6.9 (Recuperação). Média abaixo de 5 (Reprovado).", code: "" },
+        { id: 22, modulo: 'IF', title: "Múltiplo de Cinco", desc: "Verifique se o número inserido é múltiplo de 5 (ou seja, se a divisão por 5 deixa resto zero).", code: "" },
+        { id: 23, modulo: 'IF', title: "Calculadora de Sinais", desc: "Peça dois números e um caractere (simbolizando a operação: '+' ou '-'). Use IF ou SWITCH para realizar a conta correta baseada no sinal.", code: "" },
+        { id: 24, modulo: 'IF', title: "Validação de Credenciais", desc: "O sistema está protegido por senha. Leia uma senha inteira do usuário. Se for '1234', exiba 'Acesso Concedido'. Senão, exiba 'Senha Incorreta'.", code: "" },
+        { id: 25, modulo: 'IF', title: "Teorema do Triângulo", desc: "Leia três valores (A, B, C). Verifique se eles podem formar um triângulo (a soma de dois lados deve ser sempre maior que o terceiro).", code: "" },
+        { id: 26, modulo: 'IF', title: "Seletor de Calendário", desc: "Leia um número de 1 a 12 e exiba o nome do mês correspondente (1 para Janeiro, etc). Use a estrutura SWITCH para praticar.", code: "" },
+        { id: 27, modulo: 'IF', title: "Plano de Carreira", desc: "Calcule o aumento: Se o salário for até R$ 1000, o aumento é de 20%. Se for maior, o aumento é de 10%. Exiba o novo salário.", code: "" },
+        { id: 28, modulo: 'IF', title: "Tribunal Eleitoral", desc: "Leia a idade. Informe se o voto é: 'Facultativo' (16, 17 ou >70) ou 'Obrigatorio' (entre 18 e 70).", code: "" },
+        { id: 29, modulo: 'IF', title: "Monitor de Saúde", desc: "Calcule o IMC (peso / altura * altura). Se o resultado for maior que 25, exiba 'Acima do peso'. Senão, 'Peso normal'.", code: "" },
+        { id: 30, modulo: 'IF', title: "Lógica Combinada", desc: "Leia um número e verifique se ele é divisível por 3 E por 4 ao mesmo tempo. Exiba 'Divisivel' ou 'Nao divisivel'.", code: "" },
+        { id: 31, modulo: 'IF', title: "Triagem de Letras", desc: "Leia um caractere (char). Verifique se ele é uma vogal (a, e, i, o, u) e informe o resultado.", code: "" },
+        { id: 32, modulo: 'IF', title: "Ponto Zero", desc: "Leia as coordenadas X e Y de um ponto. Se ambas forem zero, informe que o ponto está na 'Origem'.", code: "" },
+        { id: 33, modulo: 'IF', title: "O Menor de Três", desc: "Receba três números inteiros e utilize a lógica de comparação para encontrar e exibir qual é o menor deles.", code: "" },
+        { id: 34, modulo: 'IF', title: "Contagem para 18", desc: "Peça a idade. Se for menor que 18, calcule e diga quantos anos faltam para a pessoa atingir a maioridade.", code: "" },
+        { id: 35, modulo: 'IF', title: "Ano do Calendário", desc: "Verifique se um ano é bissexto. Regra básica: divisível por 4 e não divisível por 100 (exceto se for divisível por 400).", code: "" },
+
+        // LOOPS (36-55)
+        
+        { id: 36, modulo: 'LOOP', title: "Sequência de Lançamento", desc: "Utilize um loop FOR para exibir uma contagem regressiva de 10 até 0 no console.", code: "" },
+        { id: 37, modulo: 'LOOP', title: "Eco Infinito", desc: "Leia um número N. Use um loop para exibir a palavra 'Eco...' exatamente N vezes.", code: "" },
+        { id: 38, modulo: 'LOOP', title: "Tabuada Dinâmica", desc: "O usuário escolhe um número X. O sistema deve imprimir a tabuada de 1 a 10 para esse número.", code: "" },
+        { id: 39, modulo: 'LOOP', title: "Somador Acumulativo", desc: "Calcule a soma de todos os números de 1 até 100 usando um loop e exiba o total final.", code: "" },
+        { id: 40, modulo: 'LOOP', title: "Filtro de Pares", desc: "Percorra os números de 1 a 50 e exiba no console apenas aqueles que forem números pares.", code: "" },
+        { id: 41, modulo: 'LOOP', title: "Média de Lote", desc: "Peça para o usuário digitar 5 notas. Use um loop para ler essas notas e calcule a média.", code: "" },
+        { id: 42, modulo: 'LOOP', title: "Cálculo de Fatorial", desc: "Leia um número N e calcule o seu fatorial (N!). Exemplo: 5! = 120.", code: "" },
+        { id: 43, modulo: 'LOOP', title: "Input Robusto", desc: "Peça uma nota entre 0 e 10. Enquanto for inválida, continue pedindo.", code: "" },
+        { id: 44, modulo: 'LOOP', title: "Potenciação Manual", desc: "Leia base e expoente e calcule a potência usando um loop.", code: "" },
+        { id: 45, modulo: 'LOOP', title: "Série de Fibonacci", desc: "Exiba os 10 primeiros números da sequência de Fibonacci.", code: "" },
+        { id: 46, modulo: 'LOOP', title: "Lista de Divisores", desc: "Dado um número N, encontre todos os seus divisores exatos.", code: "" },
+        { id: 47, modulo: 'LOOP', title: "Teste de Primalidade", desc: "Verifique se um número N é primo.", code: "" },
+        { id: 48, modulo: 'LOOP', title: "Intervalo de Ímpares", desc: "Soma de todos os números ímpares dentro de um intervalo [A, B].", code: "" },
+        { id: 49, modulo: 'LOOP', title: "Tabela de Quadrados", desc: "Exiba os números de 1 a 20 e seus respectivos quadrados.", code: "" },
+        { id: 50, modulo: 'LOOP', title: "Busca de Mínimo", desc: "Receba 10 números e identifique qual foi o menor digitado.", code: "" },
+        { id: 51, modulo: 'LOOP', title: "Censo Numérico", desc: "Leia números até digitar 0. Diga quantos eram negativos.", code: "" },
+        { id: 52, modulo: 'LOOP', title: "Salto de Três", desc: "Exiba múltiplos de 3 situados entre 1 e 100.", code: "" },
+        { id: 53, modulo: 'LOOP', title: "Média sob Demanda", desc: "O usuário decide quantos números quer digitar para tirar a média.", code: "" },
+        { id: 54, modulo: 'LOOP', title: "Impressão de Padrão", desc: "Leia N e imprima uma linha com N asteriscos.", code: "" },
+        { id: 55, modulo: 'LOOP', title: "Sistema de Saída", desc: "Menu simples (1-Continuar, 0-Sair). Repita até ser 0.", code: "" },
+
+        // VECTOR (61-70)
+        { id: 61, modulo: 'VEC', title: "Armazém de Preços", desc: "Crie um vector, adicione 3 preços e exiba a soma.", code: "" },
+        { id: 62, modulo: 'VEC', title: "Inversor de Nomes", desc: "Leia 5 nomes e mostre-os na ordem inversa.", code: "" },
+        { id: 63, modulo: 'VEC', title: "Busca de Registro", desc: "Verifique se um ID específico existe no vector de 5 posições.", code: "" },
+        { id: 64, modulo: 'VEC', title: "Gestor de Pilha", desc: "Use pop_back() para remover o último item e mostre o size.", code: "" },
+        { id: 65, modulo: 'VEC', title: "Top Score", desc: "Encontre a maior nota em um vector de 10 posições.", code: "" },
+        { id: 66, modulo: 'VEC', title: "Filtro de Elite", desc: "Transfira para um novo vector apenas valores > 100.", code: "" },
+        { id: 67, modulo: 'VEC', title: "Upgrade de Dados", desc: "Dobre o valor de todos os elementos do vector.", code: "" },
+        { id: 68, modulo: 'VEC', title: "Média de Container", desc: "Média aritmética de um vector dinâmico.", code: "" },
+        { id: 69, modulo: 'VEC', title: "Ordenação STL", desc: "Ordene os números do vector em ordem crescente usando sort().", code: "" },
+        { id: 70, modulo: 'VEC', title: "Fusão de Listas", desc: "Combine dois vectors em um terceiro.", code: "" },
+
+        // MATRIZ (71-80)
+        { id: 71, modulo: 'MAT', title: "Matriz 2x2", desc: "Declare, preencha e exiba uma matriz 2x2.", code: "" },
+        { id: 72, modulo: 'MAT', title: "Soma de Grade", desc: "Calcule a soma de todos os elementos de uma matriz 3x3.", code: "" },
+        { id: 73, modulo: 'MAT', title: "Matriz Identidade", desc: "Crie uma matriz 3x3 identidade.", code: "" },
+        { id: 74, modulo: 'MAT', title: "Acesso por Coordenada", desc: "Exiba o valor na linha L e coluna C escolhidas pelo usuário.", code: "" },
+        { id: 75, modulo: 'MAT', title: "Análise de Linha", desc: "Maior valor presente na linha 0 da matriz.", code: "" },
+        { id: 76, modulo: 'MAT', title: "Média de Coluna", desc: "Média dos valores da segunda coluna.", code: "" },
+        { id: 77, modulo: 'MAT', title: "Transposição", desc: "Gere a matriz transposta de uma matriz dada.", code: "" },
+        { id: 78, modulo: 'MAT', title: "Contador de Zeros", desc: "Conte os zeros em uma matriz 4x4.", code: "" },
+        { id: 79, modulo: 'MAT', title: "Batalha Naval", desc: "Ache o caractere 'S' escondido na matriz 5x5.", code: "" },
+        { id: 80, modulo: 'MST', title: "SISTEMA DE CINEMA", desc: "DESAFIO FINAL: Gerencie uma sala 5x5. Crie um mapa de assentos (0 vago, 1 ocupado) com sistema de reserva.", code: "" }
     ];
 
-    let exercicios = [...exerciciosBase];
-    let atual = 1;
+    const sidebar = document.getElementById('sidebar');
+    const editor = document.getElementById('editor');
+    const consoleBox = document.getElementById('console');
+    let currentId = 1;
 
-    // Variáveis que guardarão os elementos HTML (iniciam vazias)
-    let sidebar, editor, consoleDiv, btnRun, btnToggleHint, hintDiv;
-
-    // O código só roda quando a página estiver 100% pronta
-    document.addEventListener('DOMContentLoaded', () => {
-        // Vincula as variáveis ao HTML
-        sidebar = document.getElementById('sidebar');
-        editor = document.getElementById('editor');
-        consoleDiv = document.getElementById('console');
-        btnRun = document.getElementById('btn-run');
-        btnToggleHint = document.getElementById('btn-toggle-hint');
-        hintDiv = document.getElementById('hint');
-
-        gerarDesafiosFaltantes();
-        renderizarSidebar();
-        configurarEventos();
-        carregarDesafio(1);
-    });
-
-    function gerarDesafiosFaltantes() {
-        for (let i = 1; i <= 30; i++) {
-            if (!exercicios.find(x => x.id === i)) {
-                exercicios.push({
-                    id: i,
-                    titulo: `Lógica C++ Nível ${i}`,
-                    desc: `Pratique a sintaxe de C++. Resolva o desafio proposto estruturando seu pensamento lógico para o nível ${i}.`,
-                    hint: "Estruture o problema em passos pequenos. Use cin para entrada e cout para saída.",
-                    padrao: "#include <iostream>\nusing namespace std;\n\nint main() {\n    // Pratique aqui\n    return 0;\n}"
-                });
-            }
-        }
-        exercicios.sort((a, b) => a.id - b.id);
+    function toggleTheory(show) {
+        document.getElementById('theory-modal').style.display = show ? 'flex' : 'none';
     }
 
-    function renderizarSidebar() {
-        sidebar.innerHTML = '';
-        exercicios.forEach(ex => {
-            const item = document.createElement('div');
-            item.className = 'q-item';
-            item.id = `nav-${ex.id}`;
-            item.innerHTML = `<strong>${ex.id}.</strong> ${ex.titulo}`;
-            item.addEventListener('click', () => carregarDesafio(ex.id));
-            sidebar.appendChild(item);
+    function load(id) {
+        currentId = id;
+        const q = questions.find(x => x.id === id);
+        document.getElementById('q-title').innerText = `${String(q.id).padStart(2, '0')} // ${q.title}`;
+        document.getElementById('q-desc').innerText = q.desc;
+        editor.value = localStorage.getItem(`cpp_final_v9_q${id}`) || q.code || "#include <iostream>\nusing namespace std;\n\nint main() {\n    // Codifique seu algoritmo aqui\n    \n    return 0;\n}";
+        document.querySelectorAll('.q-item').forEach(el => el.classList.remove('q-active'));
+        document.getElementById(`item-${id}`).classList.add('q-active');
+        consoleBox.innerText = "Pronto para codificar a questão " + id + "...";
+    }
+
+    function salvar() {
+        localStorage.setItem(`cpp_final_v9_q${currentId}`, editor.value);
+        consoleBox.innerHTML = `<div><span style="color:var(--accent)">[SYSTEM]</span> Questão ${currentId} compilada com sucesso e salva em cache.</div>`;
+        updateProg();
+    }
+
+    function updateProg() {
+        let count = 0;
+        questions.forEach(q => { if(localStorage.getItem(`cpp_final_v9_q${q.id}`)) count++; });
+        let percent = Math.round((count/80)*100);
+        document.getElementById('prog-txt').innerText = `${percent}%`;
+        document.getElementById('prog-fill').style.width = `${percent}%`;
+    }
+
+    function init() {
+        questions.sort((a,b) => a.id - b.id).forEach(q => {
+            const div = document.createElement('div');
+            div.className = 'q-item';
+            div.id = `item-${q.id}`;
+            div.innerHTML = `<span>MOD_${q.modulo}</span><b>${String(q.id).padStart(2, '0')}. ${q.title}</b>`;
+            div.onclick = () => load(q.id);
+            sidebar.appendChild(div);
         });
+        load(1);
+        updateProg();
     }
 
-    function configurarEventos() {
-        btnRun.addEventListener('click', simularCompilacao);
-
-        btnToggleHint.addEventListener('click', () => {
-            const isHidden = hintDiv.style.display === 'none' || hintDiv.style.display === '';
-            hintDiv.style.display = isHidden ? 'block' : 'none';
-            btnToggleHint.innerText = isHidden ? 'OCULTAR DICA' : 'VER DICA';
-        });
-
-        editor.addEventListener('input', () => {
-            // Bloco try-catch para impedir travamento por bloqueio de permissão local
-            try {
-                localStorage.setItem(`cpp_save_${atual}`, editor.value);
-            } catch (e) {
-                console.warn("Salvamento automático bloqueado pelo navegador.");
-            }
-        });
-    }
-
-    function carregarDesafio(id) {
-        atual = id;
-        const ex = exercicios.find(x => x.id === id);
-        
-        document.getElementById('q-title').innerText = ex.titulo;
-        document.getElementById('q-desc').innerText = ex.desc;
-        hintDiv.innerText = ex.hint;
-        
-        hintDiv.style.display = 'none';
-        btnToggleHint.innerText = 'VER DICA';
-        document.getElementById('progresso').innerText = `Nível ${id} de 30`;
-        
-        // Tenta buscar código salvo. Se der erro (ex: bloqueio), usa o padrão.
-        let salvo = null;
-        try {
-            salvo = localStorage.getItem(`cpp_save_${id}`);
-        } catch (e) {
-            console.warn("Leitura bloqueada pelo navegador.");
-        }
-        
-        editor.value = salvo || ex.padrao;
-
-        document.querySelectorAll('.q-item').forEach(e => e.classList.remove('q-active'));
-        document.getElementById(`nav-${id}`).classList.add('q-active');
-    }
-
-    function simularCompilacao() {
-        const codigo = editor.value;
-        limparConsole();
-        logConsole("Compilando main.cpp...", "console-system");
-        
-        setTimeout(() => {
-            logConsole("Executando...\n", "console-system");
-
-            if (!codigo.includes("int main()")) {
-                logConsole("Erro Fatal: A função 'int main()' não foi encontrada.", "console-error");
-                return;
-            }
-
-            try {
-                let teveSaida = false;
-                const regexCoutStrings = /(?:std::cout|cout)\s*<<\s*"([^"]*)"/g;
-                let matchString;
-                while ((matchString = regexCoutStrings.exec(codigo)) !== null) {
-                    logConsole(matchString[1]);
-                    teveSaida = true;
-                }
-
-                if (codigo.includes("cin >>") || codigo.includes("std::cin >>")) {
-                    const input = prompt("Simulação de std::cin. Digite um valor:");
-                    logConsole(`[Entrada de usuário simulada: ${input}]`, "console-system");
-                    teveSaida = true;
-                }
-
-                if (!teveSaida) {
-                    logConsole("[Programa finalizado com sucesso. Nenhuma saída detectada no cout]");
-                }
-
-            } catch (e) {
-                logConsole("Erro de compilação: Sintaxe inválida detectada.", "console-error");
-            }
-
-            logConsole("\nProcesso retornado com código 0 (0x0).", "console-system");
-        }, 600);
-    }
-
-    function logConsole(mensagem, classeCss = "") {
-        const span = document.createElement("div");
-        if (classeCss) span.className = classeCss;
-        span.innerText = mensagem;
-        consoleDiv.appendChild(span);
-        consoleDiv.scrollTop = consoleDiv.scrollHeight; 
-    }
-
-    function limparConsole() {
-        consoleDiv.innerHTML = '';
-    }
+    window.addEventListener('keydown', (e) => { if(e.key === "Escape") toggleTheory(false); });
+    window.onload = init;
 </script>
 </body>
 </html>
