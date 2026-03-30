@@ -26,7 +26,7 @@
 <body>
 
 <header>
-    <div class="logo">C++ ACADEMY // 30 QUESTÕES</div>
+    <div class="logo">C++ ACADEMY_</div>
     <div id="stat">Questão 1 de 30</div>
 </header>
 
@@ -40,7 +40,7 @@
         </div>
 
         <div style="display:flex; flex-direction:column; overflow:hidden;">
-            <div class="toolbar"><span>main.cpp</span><button class="btn-run" onclick="runCpp()">EXECUTAR CÓDIGO</button></div>
+            <div class="toolbar"><span>main.cpp</span><button class="btn-run" onclick="runCpp()">COMPILAR & RODAR</button></div>
             <textarea id="code-editor" spellcheck="false"></textarea>
         </div>
 
@@ -52,7 +52,7 @@
     const questions = [
         // FASE 1: BÁSICO E MATEMÁTICA
         { id: 1, title: "Saída Simples", desc: "Use cout para imprimir a frase 'Aprendendo C++' na tela.", hint: "Dica: std::cout << \"texto\";", code: "#include <iostream>\n\nint main() {\n    // Seu código aqui\n    return 0;\n}" },
-        { id: 2, title: "Entrada de Usuário", desc: "Crie uma variável do tipo int, leia um valor com cin e depois imprima 'Valor: ' seguido da variável.", hint: "Dica: cin >> variavel;", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    int num;\n    return 0;\n}" },
+        { id: 2, title: "Entrada de Usuário", desc: "Crie uma variável do tipo int, leia um valor com cin e depois imprima o valor.", hint: "Dica: cin >> variavel;", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    int num;\n    return 0;\n}" },
         { id: 3, title: "Soma de Dois Números", desc: "Leia dois números inteiros e imprima a soma deles.", hint: "Dica: cin >> a >> b;", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
         { id: 4, title: "Cálculo de Dobro", desc: "Leia um número e mostre o dobro dele (num * 2).", hint: "Dica: cout << n * 2;", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
         { id: 5, title: "Média Simples", desc: "Leia duas notas (float) e calcule a média aritmética.", hint: "Dica: (n1 + n2) / 2.0", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
@@ -67,7 +67,7 @@
         { id: 12, title: "Par ou Ímpar", desc: "Leia um número e diga se é Par ou Impar.", hint: "Use if (n % 2 == 0)", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
         { id: 13, title: "Positivo ou Negativo", desc: "Diga se o número é Positivo, Negativo ou Zero.", hint: "Use else if", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
         { id: 14, title: "Maior de Dois", desc: "Leia A e B e imprima apenas o maior valor.", hint: "if (a > b) { cout << a; }", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
-        { id: 15, title: "Aprovação Escolar", desc: "Leia a nota. Se nota >= 7 'Aprovado', entre 5 e 6.9 'Recuperação', < 5 'Reprovado'.", hint: "Use múltiplos else if.", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
+        { id: 15, title: "Aprovação Escolar", desc: "Leia a nota. Se nota >= 7 'Aprovado', < 7 'Reprovado'.", hint: "Use if / else.", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
         { id: 16, title: "Login de Senha", desc: "Peça a senha (int). Se for 2024 imprima 'Acesso Liberado', senão 'Negado'.", hint: "if (senha == 2024)", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
         { id: 17, title: "Calculadora de Desconto", desc: "Leia o valor da compra. Se for > 100, aplique 10% de desconto.", hint: "preco * 0.9", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
         { id: 18, title: "Múltiplo de 5", desc: "Verifique se um número digitado é múltiplo de 5.", hint: "n % 5 == 0", code: "#include <iostream>\nusing namespace std;\n\nint main() {\n    return 0;\n}" },
@@ -105,12 +105,19 @@
     function loadQuestion(id) {
         currentId = id;
         const q = questions.find(x => x.id === id);
+        
         document.getElementById('title').innerText = q.title;
         document.getElementById('desc').innerText = q.desc;
-        document.getElementById('hint').innerText = q.hint;
+        
+        // Verifica se a dica existe antes de tentar colocar na tela
+        const hintEl = document.getElementById('hint');
+        if(hintEl) {
+            hintEl.innerText = q.hint || "";
+        }
+
         document.getElementById('stat').innerText = `Questão ${id} de 30`;
         
-        const saved = localStorage.getItem(`cpp_pro_${id}`);
+        const saved = localStorage.getItem(`cpp_pro_v2_${id}`);
         editor.value = saved || q.code;
 
         document.querySelectorAll('.q-item').forEach(el => el.classList.remove('q-active'));
@@ -121,15 +128,17 @@
     function runCpp() {
         consoleBox.innerHTML = "Compilando main.cpp...\nExecutando terminal...\n----------------------\n";
         const code = editor.value;
-        localStorage.setItem(`cpp_pro_${currentId}`, code);
+        localStorage.setItem(`cpp_pro_v2_${currentId}`, code);
 
-        // Simulador de Output
+        // Simulador de Output (Procura tudo que está entre aspas)
         const outputs = code.match(/"([^"]+)"/g);
         
-        // Simulador de Input
+        // Simulador de Input (Se o usuário usar o comando cin)
         if(code.includes("cin >>")) {
-            const userInput = prompt("Terminal C++ (cin): Digite os dados solicitados pelo código.");
-            if(userInput) consoleBox.innerHTML += ">> cin: " + userInput + "\n";
+            const userInput = prompt("Terminal C++ (cin):\nDigite os dados que o seu código está pedindo:");
+            if(userInput) {
+                consoleBox.innerHTML += ">> cin: " + userInput + "\n";
+            }
         }
 
         if(outputs) {
@@ -137,10 +146,11 @@
                 consoleBox.innerHTML += m.replace(/"/g, "") + "\n";
             });
         } else {
-            consoleBox.innerHTML += "[Sucesso] Código compilado. Verifique se você usou cout corretamente.";
+            consoleBox.innerHTML += "[Sucesso] Código compilado sem erros de sintaxe.\n(Nota: use o comando std::cout << \"texto\"; para exibir algo na tela)";
         }
     }
 
+    // Inicia a primeira questão assim que a página carrega
     loadQuestion(1);
 </script>
 </body>
